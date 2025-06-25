@@ -24,11 +24,9 @@ jobs:
 
       - name: Set custom WSL mount root
         run: |
-          echo "[automount]" > wsl.conf
-          echo "root = /" >> wsl.conf
-          wsl sudo cp wsl.conf /etc/wsl.conf
+          wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
           wsl --shutdown
-          timeout /t 10
+          Start-Sleep -Seconds 10
 
       - name: Checkout
         uses: actions/checkout@v3
