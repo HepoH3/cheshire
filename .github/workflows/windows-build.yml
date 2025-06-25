@@ -54,9 +54,9 @@ jobs:
 
       - name: Build target
         run: |
-          wsl make ${{ matrix.target }}-all"
+          wsl make ${{ matrix.target }}-all
 
       - name: Check whether clean
         run: |
-          wsl git status"
-          wsl test -z \"\$(git status --porcelain --ignore-submodules)\""
+          wsl git status
+          wsl test -z \"\$(git status --porcelain --ignore-submodules)\"
