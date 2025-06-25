@@ -1,0 +1,65 @@
+# Copyright 2022 ETH Zurich and University of Bologna.
+# Licensed under the Apache License, Version 2.0, see LICENSE for details.
+# SPDX-License-Identifier: Apache-2.0
+
+# Author: Paul Scheffler <paulsc@iis.ee.ethz.ch>
+
+name: build
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target: [sw, hw, sim]
+      fail-fast: false
+    runs-on: windows-2025
+
+    steps:
+      - name: Show WSL info
+        run: wsl uname -a
+
+      - name: Set custom WSL mount root
+        run: |
+          echo "[automount]" > wsl.conf
+          echo "root = /" >> wsl.conf
+          wsl sudo cp wsl.conf /etc/wsl.conf
+          wsl --shutdown
+          timeout /t 10
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Python
+        run: wsl sudo apt update && wsl sudo apt install -y python3 python3-pip python3-venv
+
+      - name: Install Python requirements
+        run: wsl pip3 install -r requirements.txt
+
+      - name: Install RISC-V GCC toolchain
+        run: |
+          wsl curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
+          wsl mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
+          echo "export PATH=\$HOME/riscv/bin:\$PATH" | wsl tee -a ~/.bashrc
+
+      - name: Install Bender
+        run: |
+          wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o ~/bender
+          wsl chmod +x ~/bender
+          echo "export PATH=\$HOME:\$PATH" | wsl tee -a ~/.bashrc
+
+      - name: Build target
+        run: |
+          wsl_path=$(wsl wslpath "$GITHUB_WORKSPACE")
+          echo "WSL path is $wsl_path"
+          wsl bash -c "cd $wsl_path && make ${{ matrix.target }}-all"
+
+      - name: Check whether clean
+        run: |
+          wsl_path=$(wsl wslpath "$GITHUB_WORKSPACE")
+          echo "WSL path is $wsl_path"
+          wsl bash -c "cd $wsl_path && git status"
+          wsl bash -c "cd $wsl_path && test -z \"\$(git status --porcelain --ignore-submodules)\""
