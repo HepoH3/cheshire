@@ -17,11 +17,10 @@ jobs:
     runs-on: windows-2025
 
     steps:
-      - name: Install Ubuntu in WSL
-        run: |
-          wsl --install -d Ubuntu
-          wsl --set-default-version 2
-          wsl --status
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v1
+        with:
+          distro: Ubuntu
 
       - name: Set custom WSL mount root
         run: |
