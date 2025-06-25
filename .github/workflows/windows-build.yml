@@ -22,6 +22,22 @@ jobs:
         with:
           distro: Ubuntu
 
+      - name: Install Python
+        run: |
+          $cmd = @'
+          wsl bash -c '
+            set -e
+            sudo apt update
+            for i in {1..5}; do
+              sudo apt install -y python3 python3-pip python3-venv && break
+              echo "APT failed, retrying ($i)..."
+              sleep 10
+            done
+          '@
+          # Remove CR chars (0x0D)
+          $cleanCmd = $cmd -replace "`r", ""
+          wsl bash -c "$cleanCmd"
+
       - name: Set custom WSL mount root
         run: |
           wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
@@ -32,18 +48,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-
-      - name: Install Python
-        run: |
-          wsl bash -c '
-            set -e
-            sudo apt update
-            for i in {1..5}; do
-              sudo apt install -y python3 python3-pip python3-venv && break
-              echo "APT failed, retrying ($i)..."
-              sleep 10
-            done
-          '
 
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
