@@ -17,6 +17,10 @@ jobs:
     runs-on: windows-2025
 
     steps:
+      - name: Check path
+        run: |
+          Write-Host "Path is $env:GITHUB_WORKSPACE"
+
       - name: Setup WSL
         uses: vedantmgoyal9/setup-wsl2@main
         with:
