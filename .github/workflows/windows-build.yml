@@ -22,11 +22,6 @@ jobs:
         with:
           distro: Ubuntu
 
-      - name: Check path
-        run: |
-          $wsl_path = wsl wslpath -u "`"$env:GITHUB_WORKSPACE`""
-          Write-Host "WSL path is $wsl_path"
-
       - name: Set custom WSL mount root
         run: |
           wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
@@ -59,13 +54,9 @@ jobs:
 
       - name: Build target
         run: |
-          $wsl_path = (wsl wslpath -u "`"$env:GITHUB_WORKSPACE`"").Trim('"')
-          Write-Host "WSL path is $wsl_path"
-          wsl bash -c "cd $wsl_path && make ${{ matrix.target }}-all"
+          wsl make ${{ matrix.target }}-all"
 
       - name: Check whether clean
         run: |
-          $wsl_path = (wsl wslpath -u "`"$env:GITHUB_WORKSPACE`"").Trim('"')
-          Write-Host "WSL path is $wsl_path"
-          wsl bash -c "cd $wsl_path && git status"
-          wsl bash -c "cd $wsl_path && test -z \"\$(git status --porcelain --ignore-submodules)\""
+          wsl git status"
+          wsl test -z \"\$(git status --porcelain --ignore-submodules)\""
