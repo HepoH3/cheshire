@@ -17,8 +17,11 @@ jobs:
     runs-on: windows-2025
 
     steps:
-      - name: Show WSL info
-        run: wsl uname -a
+      - name: Install Ubuntu in WSL
+        run: |
+          wsl --install -d Ubuntu
+          wsl --set-default-version 2
+          wsl --status
 
       - name: Set custom WSL mount root
         run: |
