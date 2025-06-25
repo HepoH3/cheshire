@@ -50,7 +50,7 @@ jobs:
         run: |
           wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o ~/bender
           wsl chmod +x ~/bender
-          wsl bash -c "echo 'export PATH=\$HOME:\$PATH' >> ~/.bashrc"
+          echo 'export PATH=$HOME:$PATH' | wsl tee -a ~/.bashrc
 
       - name: Build target
         run: |
