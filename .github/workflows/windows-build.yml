@@ -34,7 +34,16 @@ jobs:
           submodules: recursive
 
       - name: Install Python
-        run: wsl sudo apt update && wsl sudo apt install -y python3 python3-pip python3-venv
+        run: 
+          wsl bash -c '
+            set -e
+            sudo apt update
+            for i in {1..5}; do
+              wsl sudo apt install -y python3 python3-pip python3-venv && break
+              echo "APT failed, retrying ($i)..."
+              sleep 10
+            done
+          '
 
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
@@ -49,7 +58,7 @@ jobs:
         run: |
           wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o ~/bender
           wsl chmod +x ~/bender
-          echo "export PATH=\$HOME:\$PATH" | wsl tee -a ~/.bashrc
+          wsl bash -c "echo 'export PATH=\$HOME:\$PATH' >> ~/.bashrc"
 
       - name: Build target
         run: |
