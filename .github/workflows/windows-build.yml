@@ -17,14 +17,15 @@ jobs:
     runs-on: windows-2025
 
     steps:
-      - name: Check path
-        run: |
-          Write-Host "Path is $env:GITHUB_WORKSPACE"
-
       - name: Setup WSL
         uses: vedantmgoyal9/setup-wsl2@main
         with:
           distro: Ubuntu
+
+      - name: Check path
+        run: |
+          $wsl_path = wsl wslpath "`"$env:GITHUB_WORKSPACE`""
+          Write-Host "WSL path is $wsl_path"
 
       - name: Set custom WSL mount root
         run: |
@@ -58,13 +59,13 @@ jobs:
 
       - name: Build target
         run: |
-          $wsl_path = wsl wslpath -u $env:GITHUB_WORKSPACE
+          $wsl_path = wsl wslpath "`"$env:GITHUB_WORKSPACE`""
           Write-Host "WSL path is $wsl_path"
           wsl bash -c "cd $wsl_path && make ${{ matrix.target }}-all"
 
       - name: Check whether clean
         run: |
-          $wsl_path = wsl wslpath -u $env:GITHUB_WORKSPACE
+          $wsl_path = wsl wslpath "`"$env:GITHUB_WORKSPACE`""
           Write-Host "WSL path is $wsl_path"
           wsl bash -c "cd $wsl_path && git status"
           wsl bash -c "cd $wsl_path && test -z \"\$(git status --porcelain --ignore-submodules)\""
