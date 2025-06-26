@@ -30,12 +30,12 @@ jobs:
 
       - name: Install Bender
         run: |
-          wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o ~/bender
-          wsl chmod +x ~/bender
+          wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o $HOME/bender
+          wsl chmod +x $HOME/bender
 
       - name: Install RISC-V GCC toolchain
         run: |
-          wsl bash -c "set -e && curl -L https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1"
+          wsl bash -c "set -e && curl -L https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p $HOME/riscv && tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1"
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -51,7 +51,7 @@ jobs:
 
       - name: Build target
         run: |
-          wsl bash -c 'export CHS_SW_GCC_BINROOT=~/riscv/bin BENDER=~/bender && make ${{ matrix.target }}-all'
+          wsl bash -c 'export CHS_SW_GCC_BINROOT=$HOME/riscv/bin BENDER=$HOME/bender && make ${{ matrix.target }}-all'
 
       - name: Check whether clean
         run: |
