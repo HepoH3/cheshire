@@ -46,6 +46,7 @@ jobs:
 
       - name: Configure git to avoid CRLF issues
         run: |
+          git config --global core.autocrlf true
           wsl git config --global core.autocrlf input
 
       - name: Checkout
