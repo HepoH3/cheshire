@@ -44,13 +44,12 @@ jobs:
         run: |
           wsl curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
           wsl mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
-          echo "export PATH=\$HOME/riscv/bin:\$PATH" | wsl tee -a ~/.bashrc
+          echo "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin:\$PATH" | wsl tee -a ~/.bashrc
 
       - name: Install Bender
         run: |
-          wsl curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-linux -o ~/bender
-          wsl chmod +x ~/bender
-          echo 'export PATH=$HOME:$PATH' | wsl tee -a ~/.bashrc
+          wsl curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh
+          wsl echo 'export BENDER=\$(pwd)/bender >> ~/.bashrc'
 
       - name: Build target
         run: |
