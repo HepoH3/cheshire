@@ -50,6 +50,10 @@ jobs:
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
 
+      - name: Configure git to avoid CRLF issues
+        run: |
+          wsl git config --global core.autocrlf input
+
       - name: Build target
         run: |
           wsl bash -c 'export CHS_SW_GCC_BINROOT=$HOME/riscv/bin BENDER=$HOME/bender && make ${{ matrix.target }}-all'
