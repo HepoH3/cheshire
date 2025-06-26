@@ -26,7 +26,6 @@ jobs:
         run: |
           wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
           wsl --shutdown
-          Start-Sleep -Seconds 10
 
       - name: Install Dependencies
         run: |
