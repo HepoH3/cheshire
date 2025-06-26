@@ -36,9 +36,12 @@ jobs:
 
       - name: Install RISC-V GCC toolchain
         run: |
-          wsl curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
-          wsl mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
-          echo "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin" | wsl tee -a ~/.bashrc
+          wsl bash -c '
+          set -e
+          curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
+          mkdir -p ~/riscv
+          tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
+        '
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,7 +59,7 @@ jobs:
 
       - name: Build target
         run: |
-          wsl bash -c "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin && make ${{ matrix.target }}-all"
+          wsl bash -c 'export CHS_SW_GCC_BINROOT=~/riscv/bin && make ${{ matrix.target }}-all'
 
       - name: Check whether clean
         run: |
