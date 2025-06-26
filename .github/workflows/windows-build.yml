@@ -63,5 +63,8 @@ jobs:
 
       - name: Check whether clean
         run: |
+          wsl echo "* text=auto" >> .gitattributes
+          wsl git add --renormalize .
+          wsl rm .gitattributes
           wsl git status
           wsl bash -c 'test -z "$(git status --porcelain --ignore-submodules)"'
