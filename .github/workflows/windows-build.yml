@@ -26,7 +26,6 @@ jobs:
         run: |
           wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
           wsl --shutdown
-# It recommended to wait at least 8 seconds in order to wsl shutdown properly
           Start-Sleep -Seconds 10
 
       - name: Install Dependencies
