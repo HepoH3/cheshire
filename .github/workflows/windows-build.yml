@@ -48,7 +48,7 @@ jobs:
 
       - name: Install Bender
         run: |
-          wsl curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh
+          wsl "curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh"
           wsl echo 'export BENDER=\$(pwd)/bender >> ~/.bashrc'
 
       - name: Build target
