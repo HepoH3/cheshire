@@ -40,7 +40,9 @@ jobs:
 
       - name: Install RISC-V GCC toolchain
         run: |
-          wsl bash -c 'set -e && curl -f -sSL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p $HOME/riscv && tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1'
+          wsl curl -f -sSL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz
+          wsl bash -c 'mkdir -p $HOME/riscv'
+          wsl bash -c 'tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1'
 
       - name: Configure git to avoid CRLF issues
         run: |
