@@ -28,6 +28,18 @@ jobs:
           wsl --shutdown
           Start-Sleep -Seconds 10
 
+      - name: Install Bender
+        run: |
+          wsl bash -c "curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh"
+          wsl echo 'export BENDER=\$(pwd)/bender >> ~/.bashrc'
+          wsl echo '$BENDER'
+
+      - name: Install RISC-V GCC toolchain
+        run: |
+          wsl curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
+          wsl mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
+          echo "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin" | wsl tee -a ~/.bashrc
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -40,20 +52,11 @@ jobs:
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
 
-      - name: Install RISC-V GCC toolchain
-        run: |
-          wsl curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz
-          wsl mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1
-          echo "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin:\$PATH" | wsl tee -a ~/.bashrc
 
-      - name: Install Bender
-        run: |
-          wsl "curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh"
-          wsl echo 'export BENDER=\$(pwd)/bender >> ~/.bashrc'
 
       - name: Build target
         run: |
-          wsl make ${{ matrix.target }}-all
+          wsl bash -c "export CHS_SW_GCC_BINROOT=\$HOME/riscv/bin && make ${{ matrix.target }}-all"
 
       - name: Check whether clean
         run: |
