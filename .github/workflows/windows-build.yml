@@ -31,6 +31,7 @@ jobs:
       - name: Install Bender
         run: |
           wsl bash -c "curl --proto '=https' --tlsv1.2 https://pulp-platform.github.io/bender/init -sSf | sh"
+          wsl bash -c 'ls -la /d/a/cheshire/cheshire/bender'
 
       - name: Install RISC-V GCC toolchain
         run: |
@@ -50,7 +51,7 @@ jobs:
 
       - name: Build target
         run: |
-          wsl bash -c 'export CHS_SW_GCC_BINROOT=~/riscv/bin BENDER=$(pwd)/bender && make ${{ matrix.target }}-all'
+          wsl bash -c 'export CHS_SW_GCC_BINROOT=~/riscv/bin BENDER=/d/a/cheshire/cheshire/bender && make ${{ matrix.target }}-all'
 
       - name: Check whether clean
         run: |
