@@ -30,12 +30,13 @@ jobs:
 
       - name: Install Bender
         run: |
-          wsl bash -c 'curl -L https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-0.27.1-x86_64-linux-gnu-ubuntu22.04.tar.gz -o $HOME/bender'
+          wsl bash -c 'curl -f -sSL https://github.com/pulp-platform/bender/releases/download/v0.27.1/bender-0.27.1-x86_64-linux-gnu-ubuntu22.04.tar.gz -o $HOME/bender.tar.gz'
+          wsl bash -c 'tar -xzf $HOME/bender.tar.gz'
           wsl bash -c 'chmod +x $HOME/bender'
 
       - name: Install RISC-V GCC toolchain
         run: |
-          wsl bash -c 'set -e && curl -L https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p $HOME/riscv && tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1'
+          wsl bash -c 'set -e && curl -f -sSL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p $HOME/riscv && tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1'
 
       - name: Checkout
         uses: actions/checkout@v3
