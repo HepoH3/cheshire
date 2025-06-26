@@ -26,7 +26,12 @@ jobs:
         run: |
           wsl bash -c "echo -e '[automount]\nroot = /' | sudo tee /etc/wsl.conf"
           wsl --shutdown
+# It recommended to wait at least 8 seconds in order to wsl shutdown properly
           Start-Sleep -Seconds 10
+
+      - name: Install Dependencies
+        run: |
+          wsl bash -c "set -e; sudo apt update; for i in {1..5}; do sudo apt install -y python3 python3-pip python3-venv unzip gdisk && break; echo 'APT failed, retrying (\$i)...'; sleep 10; done"
 
       - name: Install Bender
         run: |
@@ -38,21 +43,17 @@ jobs:
         run: |
           wsl bash -c 'set -e && curl -f -sSL https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p $HOME/riscv && tar -xzf toolchain.tar.gz -C $HOME/riscv --strip-components=1'
 
+      - name: Configure git to avoid CRLF issues
+        run: |
+          wsl git config --global core.autocrlf input
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: Install Dependencies
-        run: |
-          wsl bash -c "set -e; sudo apt update; for i in {1..5}; do sudo apt install -y python3 python3-pip python3-venv unzip gdisk && break; echo 'APT failed, retrying (\$i)...'; sleep 10; done"
-
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
-
-      - name: Configure git to avoid CRLF issues
-        run: |
-          wsl git config --global core.autocrlf input
 
       - name: Build target
         run: |
