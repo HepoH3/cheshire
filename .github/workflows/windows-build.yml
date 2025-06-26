@@ -36,7 +36,7 @@ jobs:
 
       - name: Install RISC-V GCC toolchain
         run: |
-          wsl bash -c "set -e && curl -L https://github.com/pulp-platform/pulp-riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14.tar.gz -o toolchain.tar.gz && mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1"
+          wsl bash -c "set -e && curl -L https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.03.14/riscv64-elf-ubuntu-22.04-nightly-2023.03.14-nightly.tar.gz -o toolchain.tar.gz && mkdir -p ~/riscv && tar -xzf toolchain.tar.gz -C ~/riscv --strip-components=1"
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,8 +49,6 @@ jobs:
 
       - name: Install Python requirements
         run: wsl pip3 install -r requirements.txt
-
-
 
       - name: Build target
         run: |
